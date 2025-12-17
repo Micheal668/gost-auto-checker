@@ -1,0 +1,320 @@
+standard:
+  code: "GOST_7_32_2017"
+  title: "Отчет о научно-исследовательской работе. Структура и правила оформления"
+  version: "2017"
+  effective_date: "2018-07-01"
+  language: ["ru"]
+
+severity_levels:
+  - BLOCKER      # несоответствие, отчет не может быть принят
+  - MAJOR        # существенное несоответствие
+  - MINOR        # несущественное отклонение
+  - INFO         # допускается / рекомендуется / требует экспертной оценки
+
+rules:
+
+# =====================================================
+# §4 СТРУКТУРНЫЕ ЭЛЕМЕНТЫ ОТЧЕТА
+# =====================================================
+
+- id: "4.1"
+  severity: "BLOCKER"
+  title: "Отчет должен содержать обязательные структурные элементы"
+  clause: "4"
+  scope: "document"
+  check:
+    type: "structure_presence"
+    required_elements:
+      - "ТИТУЛЬНЫЙ ЛИСТ"
+      - "РЕФЕРАТ"
+      - "СОДЕРЖАНИЕ"
+      - "ВВЕДЕНИЕ"
+      - "ОСНОВНАЯ ЧАСТЬ"
+      - "ЗАКЛЮЧЕНИЕ"
+      - "СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ"
+      - "ПРИЛОЖЕНИЯ"
+
+- id: "4.2"
+  severity: "INFO"
+  title: "Допускается включение дополнительных структурных элементов"
+  clause: "4"
+  scope: "document"
+  check:
+    type: "optional_elements_allowed"
+    elements:
+      - "СПИСОК ИСПОЛНИТЕЛЕЙ"
+      - "ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ"
+      - "ПЕРЕЧЕНЬ СОКРАЩЕНИЙ И ОБОЗНАЧЕНИЙ"
+
+# =====================================================
+# §5 ТРЕБОВАНИЯ К СТРУКТУРНЫМ ЭЛЕМЕНТАМ
+# =====================================================
+
+# ---- ТИТУЛЬНЫЙ ЛИСТ ----
+
+- id: "5.1.1"
+  severity: "BLOCKER"
+  title: "Титульный лист должен быть первой страницей отчета"
+  clause: "5.1.1"
+  scope: "title_page"
+  check:
+    type: "is_first_page"
+
+- id: "5.1.2"
+  severity: "BLOCKER"
+  title: "Титульный лист должен содержать все установленные сведения"
+  clause: "5.1.2"
+  scope: "title_page"
+  check:
+    type: "required_fields"
+    fields:
+      - "наименование вышестоящей организации"
+      - "наименование организации-исполнителя"
+      - "сокращенное наименование организации"
+      - "индекс УДК"
+      - "регистрационный номер НИР"
+      - "регистрационный номер отчета"
+      - "гриф утверждения или согласования"
+      - "вид документа"
+      - "наименование работы"
+      - "вид отчета"
+      - "должность и ФИО руководителя"
+      - "город"
+      - "год"
+
+- id: "5.1.4"
+  severity: "MAJOR"
+  title: "Оформление титульного листа должно соответствовать требованиям раздела 6"
+  clause: "5.1.4"
+  scope: "title_page"
+  check:
+    type: "format_reference"
+    ref_section: "6"
+
+# ---- СПИСОК ИСПОЛНИТЕЛЕЙ ----
+
+- id: "5.2.1"
+  severity: "MAJOR"
+  title: "При наличии нескольких исполнителей должен быть приведен список исполнителей"
+  clause: "5.2.1"
+  scope: "section:СПИСОК ИСПОЛНИТЕЛЕЙ"
+  check:
+    type: "required_if"
+    condition: "author_count > 1"
+
+- id: "5.2.2"
+  severity: "INFO"
+  title: "При одном исполнителе список исполнителей допускается не приводить"
+  clause: "5.2.2"
+  scope: "document"
+  check:
+    type: "allowed_absence"
+    element: "СПИСОК ИСПОЛНИТЕЛЕЙ"
+
+# ---- РЕФЕРАТ ----
+
+- id: "5.3.1"
+  severity: "BLOCKER"
+  title: "Реферат должен соответствовать требованиям ГОСТ 7.9"
+  clause: "5.3.1"
+  scope: "section:РЕФЕРАТ"
+  check:
+    type: "external_standard_reference"
+    standard: "GOST_7_9"
+
+- id: "5.3.2"
+  severity: "BLOCKER"
+  title: "Реферат должен содержать обязательные информационные блоки"
+  clause: "5.3.2"
+  scope: "section:РЕФЕРАТ"
+  check:
+    type: "abstract_components"
+    required:
+      - "сведения об объеме"
+      - "ключевые слова"
+      - "текст реферата"
+
+- id: "5.3.2.1"
+  severity: "MAJOR"
+  title: "Количество ключевых слов должно быть от 5 до 15"
+  clause: "5.3.2.1"
+  scope: "section:РЕФЕРАТ"
+  check:
+    type: "keyword_count"
+    min: 5
+    max: 15
+
+- id: "5.3.2.2"
+  severity: "INFO"
+  title: "Текст реферата должен отражать объект, цель, методы и результаты исследования"
+  clause: "5.3.2.2"
+  scope: "section:РЕФЕРАТ"
+  check:
+    type: "semantic_review"
+    requires_manual_review: true
+
+# ---- СОДЕРЖАНИЕ ----
+
+- id: "5.4.1"
+  severity: "MAJOR"
+  title: "Содержание должно включать все структурные элементы с указанием страниц"
+  clause: "5.4.1"
+  scope: "section:СОДЕРЖАНИЕ"
+  check:
+    type: "toc_completeness"
+
+- id: "5.4.3"
+  severity: "INFO"
+  title: "В отчетах объемом не более 10 страниц содержание допускается не приводить"
+  clause: "5.4.3"
+  scope: "document"
+  check:
+    type: "conditional_optional"
+    condition: "page_count <= 10"
+
+# ---- ВВЕДЕНИЕ / ОСНОВНАЯ ЧАСТЬ / ЗАКЛЮЧЕНИЕ ----
+
+- id: "5.7"
+  severity: "INFO"
+  title: "Во введении следует обосновать актуальность и новизну работы"
+  clause: "5.7"
+  scope: "section:ВВЕДЕНИЕ"
+  check:
+    type: "semantic_review"
+
+- id: "5.8"
+  severity: "INFO"
+  title: "Основная часть должна содержать описание методов, хода и результатов исследования"
+  clause: "5.8"
+  scope: "section:ОСНОВНАЯ ЧАСТЬ"
+  check:
+    type: "semantic_review"
+
+- id: "5.9"
+  severity: "INFO"
+  title: "В заключении должны быть приведены выводы и оценка результатов"
+  clause: "5.9"
+  scope: "section:ЗАКЛЮЧЕНИЕ"
+  check:
+    type: "semantic_review"
+
+# =====================================================
+# §6 ТРЕБОВАНИЯ К ОФОРМЛЕНИЮ
+# =====================================================
+
+- id: "6.1.1"
+  severity: "BLOCKER"
+  title: "Отчет должен выполняться на листах формата A4 с установленными параметрами"
+  clause: "6.1.1"
+  scope: "document"
+  check:
+    type: "page_format"
+    page_size: "A4"
+    single_sided: true
+    font_color: "black"
+    min_font_size_pt: 12
+    line_spacing: 1.5
+
+- id: "6.1.1.margins"
+  severity: "MAJOR"
+  title: "Размеры полей и абзацного отступа должны соответствовать установленным значениям"
+  clause: "6.1.1"
+  scope: "document"
+  check:
+    type: "margins"
+    left_mm: 30
+    right_mm: 15
+    top_mm: 20
+    bottom_mm: 20
+    first_line_indent_cm: 1.25
+
+- id: "6.2.1"
+  severity: "MAJOR"
+  title: "Заголовки структурных элементов оформляются прописными буквами и размещаются по центру"
+  clause: "6.2.1"
+  scope: "structural_headings"
+  check:
+    type: "heading_format"
+    uppercase: true
+    centered: true
+    no_trailing_period: true
+    start_new_page: true
+
+- id: "6.3.1"
+  severity: "MAJOR"
+  title: "Страницы отчета должны нумероваться арабскими цифрами"
+  clause: "6.3.1"
+  scope: "document"
+  check:
+    type: "pagination"
+    numbering: "arabic"
+    continuous: true
+    position: "footer_center"
+
+- id: "6.3.2"
+  severity: "MAJOR"
+  title: "Номер страницы на титульном листе не проставляется"
+  clause: "6.3.2"
+  scope: "title_page"
+  check:
+    type: "page_number_hidden"
+
+# ---- ИЛЛЮСТРАЦИИ ----
+
+- id: "6.5"
+  severity: "MAJOR"
+  title: "Иллюстрации должны иметь ссылки, нумерацию и наименование"
+  clause: "6.5"
+  scope: "figures"
+  check:
+    type: "figure_rules"
+
+# ---- ТАБЛИЦЫ ----
+
+- id: "6.6"
+  severity: "MAJOR"
+  title: "Таблицы должны иметь наименование, нумерацию и ссылки в тексте"
+  clause: "6.6"
+  scope: "tables"
+  check:
+    type: "table_rules"
+
+# ---- ПРИМЕЧАНИЯ И СНОСКИ ----
+
+- id: "6.7"
+  severity: "MAJOR"
+  title: "Примечания и сноски оформляются по установленным правилам"
+  clause: "6.7"
+  scope: "notes"
+  check:
+    type: "notes_and_footnotes"
+
+# ---- ФОРМУЛЫ ----
+
+- id: "6.8"
+  severity: "MAJOR"
+  title: "Формулы должны выделяться, нумероваться и иметь пояснения символов"
+  clause: "6.8"
+  scope: "formulas"
+  check:
+    type: "formula_rules"
+
+# ---- ССЫЛКИ ----
+
+- id: "6.9"
+  severity: "MAJOR"
+  title: "Ссылки в тексте приводятся в квадратных скобках с порядковым номером"
+  clause: "6.9"
+  scope: "document"
+  check:
+    type: "citation_numeric_brackets"
+
+# ---- ПРИЛОЖЕНИЯ ----
+
+- id: "6.17"
+  severity: "BLOCKER"
+  title: "Приложения оформляются в соответствии с установленными требованиями"
+  clause: "6.17"
+  scope: "appendices"
+  check:
+    type: "appendix_rules"

@@ -1,0 +1,17 @@
+{
+  "title": "GOST Checker (MVP)",
+  "lang": "Language",
+  "aiMode": "AI Mode",
+  "provider": "Provider",
+  "apiKey": "API Key (not stored in MVP)",
+  "file": "Upload (.docx only)",
+  "start": "Start",
+  "status": "Status",
+  "progress": "Progress",
+  "download": "Download result",
+  "refresh": "Refresh",
+  "errDocx": "Only .docx is allowed",
+  "chooseFile": "Choose file",
+  "noFile": "No file selected"
+
+}

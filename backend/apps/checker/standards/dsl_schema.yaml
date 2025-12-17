@@ -1,0 +1,288 @@
+dsl:
+  name: "GOST-DSL"
+  version: "1.0"
+  encoding: "utf-8"
+
+# -------------------------
+# 顶层结构规范
+# -------------------------
+document_schema:
+  required_top_keys:
+    - standard
+    - severity_levels
+    - rules
+
+  standard:
+    required:
+      - code
+      - title
+      - version
+      - effective_date
+      - language
+    types:
+      code: string
+      title: string
+      version: string
+      effective_date: string   # ISO date: YYYY-MM-DD
+      language: list[string]
+    optional:
+      - dsl_version
+      - description
+      - source
+
+  severity_levels:
+    type: list[enum]
+    enum:
+      - BLOCKER
+      - MAJOR
+      - MINOR
+      - INFO
+
+# -------------------------
+# Rule 语法规范
+# -------------------------
+rule_schema:
+  required:
+    - id
+    - severity
+    - title
+    - scope
+    - check
+
+  optional:
+    - clause
+    - tags
+    - basis
+    - description
+
+  types:
+    id: string
+    severity: enum
+    title: string
+    scope: string
+    clause: string
+    tags: list[string]
+    basis: string
+    description: string
+
+  severity_enum:
+    - BLOCKER
+    - MAJOR
+    - MINOR
+    - INFO
+
+# -------------------------
+# check 语法规范（重点）
+# 说明：type 决定 params 必填字段
+# -------------------------
+check_schema:
+  required:
+    - type
+  optional:
+    - requires_manual_review
+    - condition
+    - ref_section
+    - standard
+  types:
+    type: enum
+    requires_manual_review: boolean
+    condition: string
+    ref_section: string
+    standard: string
+
+  supported_check_types:
+
+    # 结构元素必须出现
+    structure_presence:
+      params:
+        required:
+          - required_elements
+        types:
+          required_elements: list[string]
+
+    # 允许出现的可选元素
+    optional_elements_allowed:
+      params:
+        required:
+          - elements
+        types:
+          elements: list[string]
+
+    # 页面格式
+    page_format:
+      params:
+        required:
+          - page_size
+        optional:
+          - single_sided
+          - font_color
+          - min_font_size_pt
+          - line_spacing
+        types:
+          page_size: string       # e.g. A4
+          single_sided: boolean
+          font_color: string
+          min_font_size_pt: number
+          line_spacing: number
+
+    # 页边距/首行缩进
+    margins:
+      params:
+        required:
+          - left_mm
+          - right_mm
+          - top_mm
+          - bottom_mm
+        optional:
+          - first_line_indent_cm
+        types:
+          left_mm: number
+          right_mm: number
+          top_mm: number
+          bottom_mm: number
+          first_line_indent_cm: number
+
+    # 标题格式
+    heading_format:
+      params:
+        required: []
+        optional:
+          - uppercase
+          - centered
+          - no_trailing_period
+          - start_new_page
+        types:
+          uppercase: boolean
+          centered: boolean
+          no_trailing_period: boolean
+          start_new_page: boolean
+
+    # 页码规则
+    pagination:
+      params:
+        required: []
+        optional:
+          - numbering
+          - continuous
+          - position
+        types:
+          numbering: string
+          continuous: boolean
+          position: string
+
+    # 禁止显示某页页码（如 титульный лист）
+    page_number_hidden:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    # 外部标准引用（如 ГОСТ 7.9）
+    external_standard_reference:
+      params:
+        required:
+          - standard
+        types:
+          standard: string
+
+    # 内容语义检查（人工/AI）
+    semantic_review:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    # 占位：表格/插图/公式等（后续扩展）
+    table_rules:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    figure_rules:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    formula_rules:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    citation_numeric_brackets:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    appendix_rules:
+      params:
+        required: []
+        optional: []
+        types: {}
+      is_first_page:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    required_fields:
+      params:
+        required:
+          - fields
+        types:
+          fields: list[string]
+
+    keyword_count:
+      params:
+        required:
+          - min
+          - max
+        types:
+          min: number
+          max: number
+
+    toc_completeness:
+      params:
+        required: []
+        optional: []
+        types: {}
+
+    conditional_optional:
+      params:
+        required:
+          - condition
+        types:
+          condition: string
+
+    allowed_absence:
+      params:
+        required:
+          - element
+        types:
+          element: string
+
+    required_if:
+      params:
+        required:
+          - condition
+        optional: []
+        types:
+          condition: string
+
+    abstract_components:
+      params:
+        required:
+          - required
+        types:
+          required: list[string]
+
+    format_reference:
+      params:
+        required:
+          - ref_section
+        types:
+          ref_section: string
+
